@@ -1,0 +1,28 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main  # This workflow runs when changes are pushed to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Change this if your S3 bucket is in another region
+
+      # Step 3: Sync files to S3
+      - name: Deploy to S3
+        run: |
+          aws s3 sync . s3://my-portfolio-website-174285396 --delete
